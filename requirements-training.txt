@@ -1,0 +1,9 @@
+torch>=2.2
+transformers>=4.44
+datasets>=2.20
+peft>=0.12
+accelerate>=0.33
+sentencepiece>=0.2
+
+# CUDA-only optimization for QLoRA; optional on macOS/CPU
+bitsandbytes>=0.43; platform_system != "Darwin"

@@ -1,0 +1,40 @@
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local config
+.env
+.env.*
+!.env.example
+
+# Logs and runtime files
+*.log
+*.pid
+
+# OS / editor files
+.DS_Store
+.vscode/
+.idea/
+
+# Generated training artifacts
+training/checkpoints/
+training/datasets/
+latinragdb/
+
+# Generated corpus pulls (keep small demo files in repo)
+data/vulgate_*.txt
+data/vulgate_*.json
+
+# Translation outputs
+*_translated.txt

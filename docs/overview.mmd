@@ -1,0 +1,45 @@
+flowchart TD
+    A["User"] -->|CLI phrase/file| B["main.py"]
+    A -->|HTTP| H["api.py"]
+    A -->|Training commands| T["scripts/*.py"]
+
+    B -->|direction flag: lat-en/en-lat| D["Direct Ollama translation"]
+    B -->|optional --use-rag| C["RAG context build"]
+    C --> E["Retriever + Ollama\ntranslate/explain"]
+    D --> F["Translated text output"]
+    E --> G["Interactive Q&A + sources"]
+
+    H -->|POST /translate| F
+    H -->|POST /translate-file| F
+    H -->|GET /health| J["Health output"]
+
+    T --> S0["pull_source_texts.py\nHF -> parallel txt"]
+    S0 --> T1["build_sft_dataset.py\nparallel -> JSONL"]
+    T1 --> T2["train_lora.py\nreal fine-tune"]
+    T2 --> T3["LoRA adapter checkpoint"]
+    T3 --> T4["merge_lora.py (optional)\nmerged HF model"]
+
+    subgraph Inputs
+      I1["Latin/English phrase"]
+      I2["Latin/English file"]
+      I3["Parallel corpus\n*_latin.txt + *_english.txt"]
+      I4["RAG context docs\n.txt/.pdf"]
+      I5["HF dataset\nparallel-catholic-bible-versions"]
+    end
+
+    I1 --> B
+    I2 --> B
+    I1 --> H
+    I2 --> H
+    I3 --> T1
+    I3 --> C
+    I4 --> C
+    I5 --> S0
+
+    subgraph Outputs
+      F
+      G
+      J
+      T3
+      T4
+    end

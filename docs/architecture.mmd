@@ -1,0 +1,55 @@
+flowchart TD
+    subgraph Inference Interfaces
+      A["CLI: python main.py"]
+      A2["HTTP API: uvicorn api:app"]
+    end
+
+    A -->|phrase| B["Direct translation\n(Ollama model)"]
+    A -->|file| C["translate_file\n(direction aware)"]
+    A -->|interactive + use-rag| D["RAG setup"]
+    A -->|direction flag\nlat-en or en-lat| B
+    A -->|direction flag\nlat-en or en-lat| C
+    A -->|direction flag\nlat-en or en-lat| D
+
+    A2 -->|POST /translate| B
+    A2 -->|POST /translate-file| C
+    A2 -->|GET /health| O["health check"]
+
+    C -->|read .txt lines| E["Title/section detection\nLIBER, headers, numbered"]
+    E --> F["LLM translate chunks\nper direction"]
+    F --> G["Write input_translated.txt\nper direction"]
+
+    D --> H["load_documents\n(parallel texts, PDFs)"]
+    H --> I["Recursive splitter\nchunk_size=500, overlap=50"]
+    I --> J["Embeddings: all-MiniLM-L6-v2"]
+    J --> K["Chroma DB persist to latinragdb"]
+    K --> L["Retriever k=4"]
+    L --> M["RetrievalQA with Ollama\nper direction prompt"]
+    M --> N["Interactive Q&A\ntranslate + explain + sources"]
+
+    subgraph Training Pipeline
+      S0["HF dataset\nparallel-catholic-bible-versions"]
+      S1["scripts/pull_source_texts.py\nvulgate_latin.txt + vulgate_english.txt"]
+      T1["Aligned corpus\n*_latin.txt + *_english.txt"]
+      T2["scripts/build_sft_dataset.py\ntrain.jsonl + eval.jsonl"]
+      T3["scripts/train_lora.py\nLoRA/QLoRA fine-tune"]
+      T4["Adapter artifact\ntraining/checkpoints/.../adapter"]
+      T5["scripts/merge_lora.py\nmerged HF model"]
+      T6["Optional serving conversion\n(HF runtime or GGUF/Ollama path)"]
+      S0 --> S1 --> T1 --> T2 --> T3 --> T4 --> T5 --> T6
+    end
+
+    subgraph Inputs
+      X["data/*.txt or *.pdf"]
+      Y["*_latin.txt + *_english.txt"]
+    end
+    X --> H
+    Y --> H
+    Y --> T1
+
+    subgraph Outputs
+      G
+      N
+      T4
+      T5
+    end

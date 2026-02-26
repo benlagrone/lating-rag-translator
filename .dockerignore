@@ -1,0 +1,15 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+training/checkpoints
+training/datasets
+latinragdb
+
+.venv
+venv
+.env
