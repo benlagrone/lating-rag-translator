@@ -38,3 +38,7 @@ data/vulgate_*.json
 
 # Translation outputs
 *_translated.txt
+
+.rag/
+
+scripts/

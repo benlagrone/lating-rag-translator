@@ -174,3 +174,10 @@ You can generate strongly typed clients from this spec in other apps.
 - Direction mapping tested (`lat-en`, `en-lat`)
 - Error handling for `400/404/500` implemented
 - Observability added (request id, latency, failure count)
+
+
+## Production Operations Handoff
+
+For release/deploy/rollback operations, see:
+
+- `docs/prod-runbook.md`

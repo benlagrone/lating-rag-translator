@@ -65,6 +65,7 @@ Detailed API guide:
 - `docs/api.md`
 - `docs/api-handoff.md`
 - `docs/dev-server-container.md`
+- `docs/prod-runbook.md`
 
 Phrase translate:
 
